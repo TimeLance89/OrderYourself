@@ -14,8 +14,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .bootstrap/part-* > /tmp/OrderYourself-source.tar.xz
-          echo "72fb32d8df404525ae6f661b67626380a2429511c5c2157d1604c700065c68d5  /tmp/OrderYourself-source.tar.xz" | sha256sum -c -
+          cat .bootstrap/part-* | base64 --decode > /tmp/OrderYourself-source.tar.xz
+          echo "7009f6cb5f58d605112ca7c910ff8e4978cfdc98bd263e90db9ae35566450ad1  /tmp/OrderYourself-source.tar.xz" | sha256sum -c -
           tar -xJf /tmp/OrderYourself-source.tar.xz -C .
           rm -rf .bootstrap
           git config user.name 'github-actions[bot]'

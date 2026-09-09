@@ -17,15 +17,15 @@ OrderYourself ist eine lokale Haushalts-App für die Frage: **Was essen wir – 
 
 ## NAS / Docker starten
 
-Der empfohlene Weg ist das mitgelieferte Startskript:
+OrderYourself ist für UGREEN so konfiguriert, dass **kein Docker-Build und kein buildx-Plugin benötigt wird**. Compose zieht direkt das offizielle Basisimage `python:3.12-slim` und bindet den Projektcode ein.
+
+Empfohlener Start per SSH:
 
 ```bash
 sh start.sh
 ```
 
-`start.sh` stoppt alte OrderYourself-Container, baut das Image bewusst ohne Cache neu, zieht das Python-3.12-Basisimage frisch, prüft die Python-Version und startet danach den neuen Container.
-
-Der Docker-Stack verwendet absichtlich den eindeutigen Image-Tag `orderyourself:2.0-py312` und den Container-Namen `orderyourself-v2`, damit ältere OrderYourself-Images nicht versehentlich weiterverwendet werden.
+`start.sh` stoppt alte OrderYourself-Container, lädt `python:3.12-slim`, erstellt den Container neu und startet ihn. Beim ersten Start werden die Python-Abhängigkeiten automatisch in einem persistenten Docker-Volume installiert. Bei unveränderter `requirements.txt` werden sie bei späteren Neustarts nicht erneut installiert.
 
 Danach: `http://<server>:8000`
 
@@ -33,7 +33,19 @@ Die SQLite-Datenbank liegt persistent unter `./data/order_yourself.db`. Der `dat
 
 ### UGREEN Docker GUI
 
-Beim Import als Compose-Projekt die aktuelle `docker-compose.yml` aus diesem Repository verwenden und **neu bauen/erstellen**, nicht nur einen alten Container neu starten. Der neue Stack ist am Container-Namen `orderyourself-v2` erkennbar.
+1. Aktuellen Repository-Stand herunterladen/entpacken.
+2. Die aktuelle `docker-compose.yml` als Compose-Projekt verwenden.
+3. Das Projekt **neu erstellen/bereitstellen**; es ist kein Build-Schritt notwendig.
+4. Der Container heißt `orderyourself-v2` und verwendet direkt `python:3.12-slim`.
+
+Wenn die GUI vorher `Docker Compose requires buildx plugin to be installed` gezeigt hat, wurde noch eine ältere Compose-Datei mit `build:` verwendet. In der aktuellen `docker-compose.yml` gibt es keinen `build:`-Abschnitt mehr.
+
+## Docker-Aufbau
+
+- `docker-compose.yml`: UGREEN-/NAS-Standardweg ohne Buildx
+- `docker-entrypoint.sh`: prüft Python 3.12, verwaltet das persistente venv und startet Uvicorn
+- `start.sh`: komfortabler NAS-/SSH-Starter
+- `Dockerfile`: bleibt als optionaler klassischer Build-Weg für andere Umgebungen erhalten, wird vom UGREEN-Compose-Stack aber nicht benötigt
 
 ## Lokaler Start ohne Docker
 

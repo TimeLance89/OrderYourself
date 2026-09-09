@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     init: true
     healthcheck:
-      test: ["CMD", "/opt/orderyourself-venv/bin/python", "-c", "import sys,urllib.request; assert sys.version_info[:2] == (3,12); urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      test: ["CMD", "/opt/orderyourself-venv/venv/bin/python", "-c", "import sys,urllib.request; assert sys.version_info[:2] == (3,12); urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
       interval: 30s
       timeout: 5s
       retries: 5

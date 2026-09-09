@@ -15,16 +15,25 @@ OrderYourself ist eine lokale Haushalts-App für die Frage: **Was essen wir – 
 - nachvollziehen, welche Rezepte und Personen zu einer Position beigetragen haben
 - Einkauf gemeinsam abhaken
 
-## Start mit Docker
+## NAS / Docker starten
+
+Der empfohlene Weg ist das mitgelieferte Startskript:
 
 ```bash
-cp .env.example .env
-docker compose up -d --build
+sh start.sh
 ```
+
+`start.sh` stoppt alte OrderYourself-Container, baut das Image bewusst ohne Cache neu, zieht das Python-3.12-Basisimage frisch, prüft die Python-Version und startet danach den neuen Container.
+
+Der Docker-Stack verwendet absichtlich den eindeutigen Image-Tag `orderyourself:2.0-py312` und den Container-Namen `orderyourself-v2`, damit ältere OrderYourself-Images nicht versehentlich weiterverwendet werden.
 
 Danach: `http://<server>:8000`
 
-Die SQLite-Datenbank liegt persistent unter `./data/`.
+Die SQLite-Datenbank liegt persistent unter `./data/order_yourself.db`. Der `data/`-Ordner wird beim Neuaufbau des Containers nicht gelöscht.
+
+### UGREEN Docker GUI
+
+Beim Import als Compose-Projekt die aktuelle `docker-compose.yml` aus diesem Repository verwenden und **neu bauen/erstellen**, nicht nur einen alten Container neu starten. Der neue Stack ist am Container-Namen `orderyourself-v2` erkennbar.
 
 ## Lokaler Start ohne Docker
 

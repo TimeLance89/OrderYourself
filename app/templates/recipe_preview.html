@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · OrderYourself{% endblock %}
+{% block content %}
+<header class="recipe-hero">{% if image_url %}<img src="{{ image_url }}" alt="">{% endif %}<div><span class="eyebrow">Vorschau</span><h1>{{ title }}</h1>{% if subtitle %}<p>{{ subtitle }}</p>{% endif %}<div class="meta">{% if rating %}<span>★ {{ rating|num }}</span>{% endif %}{% if total_time %}<span>⏱ {{ total_time }} Min.</span>{% endif %}{% if difficulty_label %}<span>{{ difficulty_label }}</span>{% endif %}</div><form method="post" action="/recipes/import"><input type="hidden" name="recipe_ref" value="{{ external_id }}"><button class="button primary" type="submit">Rezept speichern</button></form></div></header>
+<section class="card section-gap"><div class="card-head"><h2>Zutaten für {{ target_servings }} Portionen</h2></div><div class="ingredients">{% for ing in ingredients %}{% if ing.group_header %}<h3>{{ ing.group_header }}</h3>{% endif %}<div><strong>{% if ing.amount is not none %}{{ ing.amount|num }} {{ ing.unit or '' }}{% else %}nach Bedarf{% endif %}</strong><span>{{ ing.name }}{% if ing.usage_info %} · {{ ing.usage_info }}{% endif %}</span></div>{% endfor %}</div></section>
+{% endblock %}

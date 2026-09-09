@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Einkaufszettel · OrderYourself{% endblock %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">{{ current_member.icon }} {{ current_member.name }} kauft ein</span><h1>Smarter Einkaufszettel</h1><p>Automatisch gebündelt, nach Ladenbereichen sortiert und live mit dem Haushalt synchronisiert.</p></div></header>
+<section class="card quick-add"><form class="inline-form" method="post" action="/shopping/manual" hx-post="/shopping/manual" hx-target="#shopping-content" hx-swap="outerHTML"><input name="name" required placeholder="Artikel hinzufügen"><input name="amount" type="number" min="0" step="any" placeholder="Menge"><input name="unit" placeholder="Einheit"><button class="button primary" type="submit">Hinzufügen</button></form></section>
+<div class="filter-row"><button class="chip active" type="button" data-filter="open">Nur offen</button><button class="chip" type="button" data-filter="all">Alle</button></div>
+{% include "partials/smart_shopping_content.html" %}
+{% endblock %}

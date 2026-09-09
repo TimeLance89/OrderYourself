@@ -1,0 +1,26 @@
+"""SQLite/SQLModel-Setup für den lokalen Haushaltskern."""
+from collections.abc import Iterator
+from sqlalchemy import event
+from sqlmodel import Session, SQLModel, create_engine
+from app.config import settings
+
+engine = create_engine(settings.database_url, echo=False, connect_args={"check_same_thread": False})
+
+
+@event.listens_for(engine, "connect")
+def _sqlite_pragmas(dbapi_connection, _record) -> None:
+    cur = dbapi_connection.cursor()
+    cur.execute("PRAGMA journal_mode=WAL")
+    cur.execute("PRAGMA busy_timeout=5000")
+    cur.execute("PRAGMA foreign_keys=ON")
+    cur.close()
+
+
+def init_db() -> None:
+    from app import models  # noqa: F401
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session() -> Iterator[Session]:
+    with Session(engine) as session:
+        yield session

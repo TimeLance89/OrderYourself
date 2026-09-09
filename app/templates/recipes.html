@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Rezepte · OrderYourself{% endblock %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Entdecken</span><h1>Was möchtest du essen?</h1><p>Suche ein Gericht oder stöbere durch Ideen. Gespeicherte Rezepte können mit einem Klick den gemeinsamen Einkaufszettel füllen.</p></div><a class="button secondary" href="/recipes/book">Meine Rezepte · {{ book_count }}</a></header>
+<section class="card search-card">
+  <form class="search-form" hx-post="/recipes/search" hx-target="#recipe-results" hx-swap="innerHTML"><input name="query" required placeholder="z. B. Lasagne, Curry, Kartoffelsuppe"><button class="button primary" type="submit">Suchen</button></form>
+  <div class="category-chips">{% for category in categories %}<button class="chip" hx-get="/recipes/inspiration/{{ category.slug }}" hx-target="#recipe-results" hx-swap="innerHTML">{{ category.label }}</button>{% endfor %}</div>
+</section>
+<section id="recipe-results" class="section-gap"><div class="empty card"><span>🍽️</span><h2>Worauf habt ihr Lust?</h2><p>Wähle eine Kategorie oder suche nach einem Gericht.</p></div></section>
+{% endblock %}

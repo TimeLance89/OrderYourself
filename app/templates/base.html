@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="oy-csrf" content="{{ request.state.csrf_token }}">
+  <title>{% block title %}OrderYourself{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.3/dist/htmx.min.js" defer></script>
+  <script src="/static/app.js?v=2" defer></script>
+</head>
+<body>
+{% set path = request.url.path %}
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-mark">OY</span><span><strong>OrderYourself</strong><small>Gemeinsam essen & einkaufen</small></span></a>
+    <nav>
+      <a class="{{ 'active' if path == '/' else '' }}" href="/">🏠 Übersicht</a>
+      <a class="{{ 'active' if path.startswith('/recipes') else '' }}" href="/recipes">🍲 Rezepte</a>
+      <a class="{{ 'active' if path.startswith('/shopping') else '' }}" href="/shopping">🛒 Einkaufszettel</a>
+      <a class="{{ 'active' if path.startswith('/household') else '' }}" href="/household">👥 Haushalt</a>
+    </nav>
+    <div class="sidebar-note">Lokal · händlerunabhängig</div>
+  </aside>
+  <main>{% block content %}{% endblock %}</main>
+</div>
+<nav class="mobile-nav">
+  <a href="/">🏠<span>Heute</span></a><a href="/recipes">🍲<span>Rezepte</span></a><a href="/shopping">🛒<span>Einkauf</span></a><a href="/household">👥<span>Haushalt</span></a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Haushalt · OrderYourself{% endblock %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Mehrbenutzer-Haushalt</span><h1>{{ profile.name }}</h1><p>Wähle auf jedem Gerät die Person aus, die OrderYourself gerade bedient.</p></div></header>
+{% if saved %}<div class="notice success">✓ Haushaltsprofil gespeichert.</div>{% endif %}
+<section class="card">
+  <div class="card-head"><div><span class="eyebrow">Aktiv auf diesem Gerät</span><h2>{{ current_member.icon }} {{ current_member.name }}</h2></div></div>
+  <div class="member-grid">
+  {% for member in members %}
+    <div class="member-card {{ 'selected' if member.id == current_member.id else '' }}">
+      <form method="post" action="/household/members/{{ member.id }}/select"><button class="member-select" type="submit"><span>{{ member.icon }}</span><strong>{{ member.name }}</strong>{% if member.id == current_member.id %}<small>aktiv</small>{% endif %}</button></form>
+      {% if members|length > 1 %}<form method="post" action="/household/members/{{ member.id }}/disable"><button class="icon-button danger" type="submit" title="Deaktivieren">×</button></form>{% endif %}
+    </div>
+  {% endfor %}
+  </div>
+  <form class="inline-form add-member" method="post" action="/household/members"><input name="icon" value="🙂" maxlength="8" aria-label="Symbol"><input name="name" required maxlength="60" placeholder="Name"><button class="button secondary" type="submit">Person hinzufügen</button></form>
+</section>
+<section class="card section-gap">
+  <div class="card-head"><div><span class="eyebrow">Gemeinsame Vorlieben</span><h2>Haushaltsprofil</h2></div></div>
+  <form class="form-grid" method="post" action="/household/save">
+    <label>Haushaltsname<input name="name" value="{{ profile.name }}" required></label>
+    <label>Ernährungsstile<input name="dietary_styles" value="{{ profile.dietary_styles }}" placeholder="z. B. vegetarisch"></label>
+    <label>Allergien<input name="allergies" value="{{ profile.allergies }}"></label>
+    <label>Mag ich nicht<input name="dislikes" value="{{ profile.dislikes }}"></label>
+    <label>Favoriten<input name="favorites" value="{{ profile.favorites }}"></label>
+    <label>Max. Kochzeit werktags<input type="number" min="10" max="240" name="weekday_max_minutes" value="{{ profile.weekday_max_minutes }}"></label>
+    <label>Neugier auf neue Gerichte <strong>{{ profile.variety_preference }}%</strong><input type="range" min="0" max="100" name="variety_preference" value="{{ profile.variety_preference }}"></label>
+    <div><button class="button primary" type="submit">Profil speichern</button></div>
+  </form>
+</section>
+{% if events %}<section class="card section-gap"><div class="card-head"><h2>Letzte Änderungen</h2></div><div class="timeline">{% for event in events %}<div><span>{{ event.at.strftime('%d.%m. %H:%M') }}</span><strong>{{ event.title }}</strong>{% if event.detail %}<small>{{ event.detail }}</small>{% endif %}</div>{% endfor %}</div></section>{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head">
+  <div><span class="eyebrow">{{ current_member.icon }} {{ current_member.name }}</span><h1>Was essen wir?</h1><p>Gerichte entdecken, gemeinsam auswählen und den Laden-Einkauf automatisch organisieren.</p></div>
+  <a class="button primary" href="/recipes">Gericht finden</a>
+</header>
+<div class="grid two">
+  <section class="card hero-card">
+    <div class="card-head"><div><span class="eyebrow">Einkaufszettel</span><h2>{{ shopping_summary.remaining }} offen</h2></div><strong class="big-number">{{ shopping_summary.progress }}%</strong></div>
+    <div class="progress"><span style="width:{{ shopping_summary.progress }}%"></span></div>
+    {% if shopping_groups %}
+      <div class="mini-groups">{% for group in shopping_groups %}<div><span>{{ group.icon }}</span><strong>{{ group.name }}</strong><small>{{ group.open_count }} offen</small></div>{% endfor %}</div>
+    {% else %}<p class="muted">Noch keine Artikel. Ein Rezept reicht, um loszulegen.</p>{% endif %}
+    <a class="button" href="/shopping">Einkaufszettel öffnen</a>
+  </section>
+  <section class="card">
+    <span class="eyebrow">Gemeinsamer Haushalt</span><h2>Jeder kann beitragen</h2>
+    <p>Auf jedem Gerät kann die Person ausgewählt werden, die gerade etwas hinzufügt oder abhakt. Änderungen erscheinen automatisch bei allen anderen.</p>
+    <a class="button secondary" href="/household">Mitglieder verwalten</a>
+  </section>
+</div>
+{% if recent_recipes %}
+<section class="card section-gap"><div class="card-head"><h2>Zuletzt gespeichert</h2><a href="/recipes/book">Alle Rezepte</a></div><div class="recipe-list compact">{% for recipe in recent_recipes %}<a href="/recipes/{{ recipe.id }}"><strong>{{ recipe.title }}</strong><span>{{ recipe.base_servings }} Portionen</span></a>{% endfor %}</div></section>
+{% endif %}
+{% endblock %}

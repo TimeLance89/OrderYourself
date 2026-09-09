@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Meine Rezepte · OrderYourself{% endblock %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Rezeptbuch</span><h1>Meine Rezepte</h1><p>Deine gespeicherten Gerichte – bereit für den gemeinsamen Einkaufszettel.</p></div><a class="button primary" href="/recipes">Neue Rezepte finden</a></header>
+{% if recipes %}<div class="recipe-grid">{% for recipe in recipes %}<article class="recipe-card">{% if recipe.image_url %}<a href="/recipes/{{ recipe.id }}"><img src="{{ recipe.image_url }}" alt="" loading="lazy"></a>{% endif %}<div><h3><a href="/recipes/{{ recipe.id }}">{{ recipe.title }}</a></h3><div class="meta"><span>{{ recipe.base_servings }} Portionen</span>{% if recipe.total_time %}<span>⏱ {{ recipe.total_time }} Min.</span>{% endif %}</div><a class="button secondary" href="/recipes/{{ recipe.id }}">Öffnen</a></div></article>{% endfor %}</div>{% else %}<div class="empty card"><span>🔖</span><h2>Noch keine Rezepte gespeichert</h2><a class="button primary" href="/recipes">Rezepte entdecken</a></div>{% endif %}
+{% endblock %}

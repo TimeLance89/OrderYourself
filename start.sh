@@ -1,6 +1,5 @@
 #!/bin/sh
-# OrderYourself NAS-/Host-Starter
-# Stoppt alte Container und erzwingt einen frischen Python-3.12-Build.
+# OrderYourself NAS-/Host-Starter für UGREEN ohne buildx.
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -27,28 +26,21 @@ fi
 
 mkdir -p data
 
-echo "[1/5] Alte OrderYourself-Container stoppen ..."
+echo "[1/4] Alte OrderYourself-Container stoppen ..."
 compose down --remove-orphans || true
+docker rm -f OrderYourself orderyourself-v2 >/dev/null 2>&1 || true
 
-echo "[2/5] Eventuell vorhandenen v2-Container entfernen ..."
-docker rm -f orderyourself-v2 >/dev/null 2>&1 || true
+echo "[2/4] Python-3.12-Basisimage laden ..."
+compose pull orderyourself
 
-echo "[3/5] Frisches Image ohne Build-Cache erstellen ..."
-compose build --no-cache --pull orderyourself
-
-echo "[4/5] Python-Version im neuen Image pruefen ..."
-PYTHON_VERSION=$(compose run --rm --no-deps --entrypoint python orderyourself -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-if [ "$PYTHON_VERSION" != "3.12" ]; then
-    echo "FEHLER: Erwartet Python 3.12, gebaut wurde Python $PYTHON_VERSION"
-    exit 1
-fi
-echo "Python $PYTHON_VERSION OK."
-
-echo "[5/5] OrderYourself neu starten ..."
+echo "[3/4] OrderYourself ohne Docker-Build neu erstellen ..."
 compose up -d --force-recreate orderyourself
 
-echo
+echo "[4/4] Status anzeigen ..."
+sleep 3
 compose ps
+
 echo
-echo "OrderYourself wurde neu gebaut und gestartet."
+echo "OrderYourself wurde ohne buildx gestartet."
+echo "Beim ersten Start werden die Python-Abhängigkeiten im Container installiert."
 echo "Logs: docker compose logs -f orderyourself"

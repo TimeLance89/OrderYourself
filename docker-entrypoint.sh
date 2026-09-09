@@ -17,10 +17,15 @@ if sys.version_info[:2] != (3, 12):
 print(f"Python runtime: {sys.version.split()[0]}")
 PY
 
-VENV_DIR="/opt/orderyourself-venv"
+# Der Docker-Volume-Mount selbst darf niemals gelöscht werden.
+# Deshalb liegt die eigentliche virtuelle Umgebung in einem Unterordner.
+VOLUME_ROOT="/opt/orderyourself-venv"
+VENV_DIR="$VOLUME_ROOT/venv"
 REQ_FILE="/app/requirements.txt"
-REQ_HASH=$(sha256sum "$REQ_FILE" | awk '{print $1}')
 MARKER="$VENV_DIR/.requirements.sha256"
+
+mkdir -p "$VOLUME_ROOT"
+REQ_HASH=$(sha256sum "$REQ_FILE" | awk '{print $1}')
 CURRENT_HASH=""
 [ -f "$MARKER" ] && CURRENT_HASH=$(cat "$MARKER" || true)
 

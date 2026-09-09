@@ -1,17 +1,23 @@
 services:
   orderyourself:
-    build: .
+    image: orderyourself:2.0-py312
+    container_name: orderyourself-v2
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       DATABASE_PATH: /app/data/order_yourself.db
       TZ: Europe/Berlin
+      PORT: 8000
     ports:
       - "${ORDERYOURSELF_PORT:-8000}:8000"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
+    init: true
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      test: ["CMD", "python", "-c", "import sys,urllib.request; assert sys.version_info[:2] == (3,12); urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 15s

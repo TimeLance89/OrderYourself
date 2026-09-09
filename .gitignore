@@ -1,0 +1,27 @@
+config.ini
+__pycache__/
+*.pyc
+.venv/
+venv/
+.tools/
+data/*.db
+data/cache/
+data/browser/
+.pytest_cache/
+
+# Local secrets / sessions
+.env
+.talheim_secret
+data/.picnic_session.json
+
+# Local browser/runtime assets
+.ruff_cache/
+data/ms-playwright/
+data/*.db-*
+
+# Local verification output
+verify_*.out
+verify_*.err
+
+# Local Claude settings
+.claude/settings.local.json

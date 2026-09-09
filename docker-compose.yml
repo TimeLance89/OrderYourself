@@ -1,23 +1,31 @@
 services:
   orderyourself:
-    image: orderyourself:2.0-py312
+    image: python:3.12-slim
     container_name: orderyourself-v2
-    build:
-      context: .
-      dockerfile: Dockerfile
+    working_dir: /app
     environment:
       DATABASE_PATH: /app/data/order_yourself.db
       TZ: Europe/Berlin
       PORT: 8000
+      PYTHONUNBUFFERED: "1"
     ports:
       - "${ORDERYOURSELF_PORT:-8000}:8000"
     volumes:
+      - ./app:/app/app:ro
+      - ./static:/app/static:ro
+      - ./requirements.txt:/app/requirements.txt:ro
+      - ./docker-entrypoint.sh:/app/docker-entrypoint.sh:ro
       - ./data:/app/data
+      - orderyourself_venv:/opt/orderyourself-venv
+    command: ["sh", "/app/docker-entrypoint.sh"]
     restart: unless-stopped
     init: true
     healthcheck:
-      test: ["CMD", "python", "-c", "import sys,urllib.request; assert sys.version_info[:2] == (3,12); urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      test: ["CMD", "/opt/orderyourself-venv/bin/python", "-c", "import sys,urllib.request; assert sys.version_info[:2] == (3,12); urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
       interval: 30s
       timeout: 5s
-      retries: 3
-      start_period: 15s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  orderyourself_venv:
